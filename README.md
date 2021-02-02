@@ -10,7 +10,7 @@ Syntax:
 * n2 – second number
 * r – recurring decimals of the first number (default 0)
 * rstr1 – string of the recursion beginning (default "[")
-* rstr2 – string of the recursion end (default "])
+* rstr2 – string of the recursion end (default "]")
 ## Examples:
 <code>print(AdvDiv.div(1, 6))</code>
 
