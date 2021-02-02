@@ -4,6 +4,7 @@
 If you have Python installed, you can test this from the command line, such as <code> py AdvDiv.py 1 7</code> or open the <em>AdvDiv-demo.py</em> file.
 
 Import this library using <code>import AdvDiv</code>
+
 Syntax:
 <code>AdvDiv.div(n1, n2, r1, str1, rstr2)</code>
 * n1 – first number
