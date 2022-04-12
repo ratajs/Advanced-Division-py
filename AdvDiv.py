@@ -2,7 +2,7 @@ import re
 def div(n1, n2, r = 0, rstr1 = "[", rstr2 = "]"):
   if float(n2)==float(0):
     return False
-  sign = "-" if ((int(n2) >= 0) if (int(n1) < 0) else (int(n2) < 0)) else ""
+  sign = "-" if ((float(n2) >= 0) if (float(n1) < 0) else (float(n2) < 0)) else ""
   n1 = abs(float(n1))
   n2 = abs(float(n2))
   r = abs(int(r))
