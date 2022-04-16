@@ -55,20 +55,21 @@ def div(n1, n2, r = 0, rstr1 = "[", rstr2 = "]"):
 			over = True
 			n1s.append(int(list(str(r))[rcount % len(str(r))]))
 		newcarry = (int(times10(str(carry))) + int(n1s[i])) % n2
-		if over and newcarry==0 and r==0:
-			res+= str((int(times10(str(carry))) + int(n1s[i])) // n2)
-			return sign + re.sub("^$", "0", re.sub("^\.", "0.", res.strip("0").rstrip(".")))
-		x = 0
-		while x < len(carries):
-			if over and carries[x]==newcarry and (x % len(str(r)))==((rcount + 1) % len(str(r))):
+		if over:
+			if newcarry==0 and r==0:
 				res+= str((int(times10(str(carry))) + int(n1s[i])) // n2)
-				result = sign + re.sub("^$", "0", re.sub("^\.", "0.", re.sub("^0+", "", res[:i - rcount + x] + "[" + res[i - rcount + x:] + "]")))
-				if result[result.index("[") - 1]==result[result.index("]") - 1]:
-					result = result[:result.index("[") - 1] + "[" + result[result.index("[") - 1] + result[result.index("[") + 1:result.index("]") - 1] + "]"
-				if result.index("]")==result.index("[") + 3 and result[result.index("[") + 1]==result[result.index("[") + 2]:
-					result = result[:result.index("[") + 1] + "]"
-				return result.replace("[", rstr1).replace("]", rstr2)
-			x+= 1
+				return sign + re.sub("^$", "0", re.sub("^\.", "0.", res.strip("0").rstrip(".")))
+			x = 0
+			while x < len(carries):
+				if carries[x]==newcarry and (x % len(str(r)))==((rcount + 1) % len(str(r))):
+					res+= str((int(times10(str(carry))) + int(n1s[i])) // n2)
+					result = sign + re.sub("^$", "0", re.sub("^\.", "0.", re.sub("^0+", "", res[:i - rcount + x] + "[" + res[i - rcount + x:] + "]")))
+					if result[result.index("[") - 1]==result[result.index("]") - 1]:
+						result = result[:result.index("[") - 1] + "[" + result[result.index("[") - 1] + result[result.index("[") + 1:result.index("]") - 1] + "]"
+					if result.index("]")==result.index("[") + 3 and result[result.index("[") + 1]==result[result.index("[") + 2]:
+						result = result[:result.index("[") + 2] + "]"
+					return result.replace("[", rstr1).replace("]", rstr2)
+				x+= 1
 		res+= str((int(times10(str(carry))) + int(n1s[i])) // n2)
 		if over:
 			carries.append(carry)
