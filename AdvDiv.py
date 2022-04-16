@@ -23,10 +23,6 @@ def div(n1, n2, r = 0, rstr1 = "[", rstr2 = "]"):
 			n1string+= str(r)[0]
 			if len(str(r)) > 1:
 				r = int(str(r)[1:] + str(r)[0])
-		elif "." in times10(n1string):
-			n1string = times10(n1string)+str(r)[0]
-			if len(str(r)) > 1:
-				r = int(str(r)[1:] + str(r)[0])
 		else:
 			n1string = times10(n1string)
 		n2string = times10(n2string)
@@ -70,7 +66,7 @@ def div(n1, n2, r = 0, rstr1 = "[", rstr2 = "]"):
 				if result[result.index("[") - 1]==result[result.index("]") - 1]:
 					result = result[:result.index("[") - 1] + "[" + result[result.index("[") - 1] + result[result.index("[") + 1:result.index("]") - 1] + "]"
 				if result.index("]")==result.index("[") + 3 and result[result.index("[") + 1]==result[result.index("[") + 2]:
-					result = result[:result.index("[") + 1] + result[result.index("[") + 2:]
+					result = result[:result.index("[") + 1] + "]"
 				return result.replace("[", rstr1).replace("]", rstr2)
 			x+= 1
 		res+= str((int(times10(str(carry))) + int(n1s[i])) // n2)
