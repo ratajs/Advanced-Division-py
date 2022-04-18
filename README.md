@@ -1,3 +1,5 @@
+![](https://raw.githubusercontent.com/ratajs/Advanced-Division/master/imgs/icon.svg)
+
 # Advanced-Division-py
 ### Divide two numbers using recurring decimals
 
@@ -25,4 +27,5 @@ Syntax:
 
 <pre>16.[329475122578570854432923398440639819950164777750984647536371674302708785467406157061]</pre>
 
-This code was created as a translation of my JavaScript [library](https://github.com/ratajs/Advanced-Division-js), so it should produce the same results, you can try the [demo](https://ratajs.github.io/Advanced-Division/demo.html).
+This code was created as a translation of my JavaScript [library](https://github.com/ratajs/Advanced-Division-js), so it should produce the same results.
+Learn more: <https://advdiv.ratajs.cz>
