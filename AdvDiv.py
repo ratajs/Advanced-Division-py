@@ -1,12 +1,34 @@
 import re
 
-def div(n1, n2, r1 = 0, rstr1 = "[", rstr2 = "]"):
-	if float(n2)==float(0):
+def div(n1, n2, r1 = 0, r2 = 0, rstr1 = "[", rstr2 = "]"):
+	if float(n2)==float(0) and int(r2)==0:
 		return False
 	sign = "-" if ((float(n2) >= 0) if (float(n1) < 0) else (float(n2) < 0)) else ""
 	n1 = abs(float(n1))
 	n2 = abs(float(n2))
 	r1 = abs(int(r1))
+	r2 = abs(int(r2))
+	n1string = str(n1)[:-2] if str(n1).endswith(".0") else str(n1)
+	n2string = str(n2)[:-2] if str(n2).endswith(".0") else str(n2)
+
+	if r2!=0:
+		n1m = n1string.replace(".", "")
+		n2m = n2string.replace(".", "")
+
+		n1mc = int(n1m+str(r1)) - int(n1m)
+		n2mc = int(n2m+str(r2)) - int(n2m)
+
+		if "." in n1string:
+			m1 = 10 ** (len(n1string) - n1string.index(".") - 1 + len(str(r1))) - 10 ** (len(n1string) - n1string.index(".") - 1)
+		else:
+			m1 = 10 ** len(str(r1)) - 1
+
+		if "." in n2string:
+			m2 = 10 ** (len(n2string) - n2string.index(".") - 1 + len(str(r2))) - 10 ** (len(n2string) - n2string.index(".") - 1)
+		else:
+			m2 = 10 ** len(str(r2)) - 1
+
+		return div(n1mc * m2, m1 * n2mc, 0, 0, rstr1, rstr2)
 
 	def times10(nstring):
 		if nstring.endswith(".0"):
@@ -16,16 +38,14 @@ def div(n1, n2, r1 = 0, rstr1 = "[", rstr2 = "]"):
 		if "." in nstring and nstring.find(".")==len(nstring) - 2:
 			return nstring.replace(".", "")
 		if "." in nstring:
-			return nstring.split(".")[0] + nstring.split(".")[1][0] + "." + nstring.split(".")[1][1:]
+			return nstring.split(".")[0]+nstring.split(".")[1][0]+"."+nstring.split(".")[1][1:]
 		return nstring + "0"
 
-	n1string = str(n1)[:-2] if str(n1).endswith(".0") else str(n1)
-	n2string = str(n2)[:-2] if str(n2).endswith(".0") else str(n2)
 	while "." in n2string:
 		if "." not in n1string:
 			n1string+= str(r1)[0]
 			if len(str(r1)) > 1:
-				r1 = int(str(r1)[1:] + str(r1)[0])
+				r1 = int(str(r1)[1:]+str(r1)[0])
 		else:
 			n1string = times10(n1string)
 		n2string = times10(n2string)
@@ -60,16 +80,16 @@ def div(n1, n2, r1 = 0, rstr1 = "[", rstr2 = "]"):
 		if over:
 			if newcarry==0 and r1==0:
 				res+= str((int(times10(str(carry))) + int(n1s[x])) // n2)
-				return sign + re.sub("^$", "0", re.sub("^\\.", "0.", res.strip("0").rstrip(".")))
+				return sign+re.sub("^$", "0", re.sub("^\\.", "0.", res.strip("0").rstrip(".")))
 			y = 0
 			while y < len(carries):
 				if carries[y]==newcarry and (y % len(str(r1)))==((rcount + 1) % len(str(r1))):
 					res+= str((int(times10(str(carry))) + int(n1s[x])) // n2)
-					result = sign + re.sub("^$", "0", re.sub("^\\.", "0.", re.sub("^0+", "", res[:x - rcount + y] + "[" + res[x - rcount + y:] + "]")))
+					result = sign+re.sub("^$", "0", re.sub("^\\.", "0.", re.sub("^0+", "", res[:x - rcount + y]+"["+res[x - rcount + y:]+"]")))
 					if result[result.index("[") - 1]==result[result.index("]") - 1]:
-						result = result[:result.index("[") - 1] + "[" + result[result.index("[") - 1] + result[result.index("[") + 1:result.index("]") - 1] + "]"
+						result = result[:result.index("[") - 1]+"["+result[result.index("[") - 1]+result[result.index("[")+1:result.index("]") - 1]+"]"
 					if result.index("]")==result.index("[") + 3 and result[result.index("[") + 1]==result[result.index("[") + 2]:
-						result = result[:result.index("[") + 2] + "]"
+						result = result[:result.index("[") + 2]+"]"
 					return result.replace("[", rstr1).replace("]", rstr2)
 				y+= 1
 		res+= str((int(times10(str(carry))) + int(n1s[x])) // n2)
@@ -78,7 +98,7 @@ def div(n1, n2, r1 = 0, rstr1 = "[", rstr2 = "]"):
 		carry = newcarry
 		x+= 1
 
-if __name__ == "__main__":
+if __name__=="__main__":
 	import sys
 	if len(sys.argv) > 2:
-		print(div(sys.argv[1], sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else 0, sys.argv[4] if len(sys.argv) > 4 else "[", sys.argv[5] if len(sys.argv) > 5 else "]"))
+		print(div(sys.argv[1], sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else 0, sys.argv[4] if len(sys.argv) > 4 else 0, sys.argv[5] if len(sys.argv) > 5 else "[", sys.argv[6] if len(sys.argv) > 6 else "]"))
