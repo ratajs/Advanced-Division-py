@@ -1,34 +1,66 @@
 import re
 
-def div(n1, n2, r1 = 0, r2 = 0, rstr1 = "[", rstr2 = "]"):
-	if float(n2)==float(0) and int(r2)==0:
-		return False
-	sign = "-" if ((float(n2) >= 0) if (float(n1) < 0) else (float(n2) < 0)) else ""
-	n1 = abs(float(n1))
-	n2 = abs(float(n2))
-	r1 = abs(int(r1))
-	r2 = abs(int(r2))
-	n1string = str(n1)[:-2] if str(n1).endswith(".0") else str(n1)
-	n2string = str(n2)[:-2] if str(n2).endswith(".0") else str(n2)
+def div(n1, n2, minstr = "-", decstr = ".", rstr1 = "[", rstr2 = "]"):
+	(n1, n2) = (str(n1), str(n2))
 
-	if r2!=0:
-		n1m = n1string.replace(".", "")
-		n2m = n2string.replace(".", "")
+	if len(n1)==0 or len(n2)==0 or re.match("^\\d*$", minstr) or re.match("^\\d*$", decstr) or re.match("^\\d*$", rstr1) or re.match("^\\d*$", rstr2):
+		return False
+
+	nre = "^("+re.escape(minstr)+")?\\d*("+re.escape(decstr)+"\\d*("+re.escape(rstr1)+"\\d*"+re.escape(rstr2)+")?)?$"
+
+	if not re.match(nre, n1) or not re.match(nre, n2):
+		return False
+
+	neg = False
+	if n1.startswith(minstr):
+		n1 = n1[len(minstr):]
+		neg = True
+	if n2.startswith(minstr):
+		n2 = n2[len(minstr):]
+		neg = not neg
+
+	sign = minstr if neg else ""
+
+	n1 = n1.replace(decstr, ".", 1)
+	n2 = n2.replace(decstr, ".", 1)
+
+	if n1[0]==".":
+		n1 = "0"+n1
+
+	if n2[0]==".":
+		n2 = "0"+n2
+
+	r1 = re.search(re.escape(rstr1)+"(.+)"+re.escape(rstr2), n1)
+	r1 = "0" if r1 is None else r1.group(1)
+	n1 = n1.split(rstr1)[0]
+	r2 = re.search(re.escape(rstr1)+"(.+)"+re.escape(rstr2), n2)
+	r2 = "0" if r2 is None else r2.group(1)
+	n2 = n2.split(rstr1)[0]
+
+
+	if n2=="0" and re.match("^[0\\.]+$", r2):
+		return False
+	if n1=="0" and re.match("^[0\\.]+$", r1):
+		return "0"
+
+	if r2!="0":
+		n1m = n1.replace(".", "", 1)
+		n2m = n2.replace(".", "", 1)
 
 		n1mc = int(n1m+str(r1)) - int(n1m)
 		n2mc = int(n2m+str(r2)) - int(n2m)
 
-		if "." in n1string:
-			m1 = 10 ** (len(n1string) - n1string.index(".") - 1 + len(str(r1))) - 10 ** (len(n1string) - n1string.index(".") - 1)
+		if "." in n1:
+			m1 = 10 ** (len(n1) - n1.index(".") - 1 + len(str(r1))) - 10 ** (len(n1) - n1.index(".") - 1)
 		else:
 			m1 = 10 ** len(str(r1)) - 1
 
-		if "." in n2string:
-			m2 = 10 ** (len(n2string) - n2string.index(".") - 1 + len(str(r2))) - 10 ** (len(n2string) - n2string.index(".") - 1)
+		if "." in n2:
+			m2 = 10 ** (len(n2) - n2.index(".") - 1 + len(str(r2))) - 10 ** (len(n2) - n2.index(".") - 1)
 		else:
 			m2 = 10 ** len(str(r2)) - 1
 
-		return div(n1mc * m2, m1 * n2mc, 0, 0, rstr1, rstr2)
+		return sign+div(n1mc * m2, m1 * n2mc, minstr, decstr, rstr1, rstr2)
 
 	def times10(nstring):
 		if nstring.endswith(".0"):
@@ -41,26 +73,25 @@ def div(n1, n2, r1 = 0, r2 = 0, rstr1 = "[", rstr2 = "]"):
 			return nstring.split(".")[0]+nstring.split(".")[1][0]+"."+nstring.split(".")[1][1:]
 		return nstring + "0"
 
-	while "." in n2string:
-		if "." not in n1string:
-			n1string+= str(r1)[0]
+	while "." in n2:
+		if "." not in n1:
+			n1+= str(r1)[0]
 			if len(str(r1)) > 1:
 				r1 = int(str(r1)[1:]+str(r1)[0])
 		else:
-			n1string = times10(n1string)
-		n2string = times10(n2string)
-	n1 = float(n1string)
-	n2 = int(n2string)
+			n1= times10(n1)
+		n2= times10(n2)
+	n2i = int(n2)
 	res = ""
-	n1s = list(n1string)
-	n1s1 = list(n1string.split(".")[0])
+	n1s = list(n1)
+	n1s1 = list(n1.split(".")[0])
 	carry = 0
 	newcarry = 0
 	over = False
 	x = 0
 	for v in n1s1:
-		res+= str((int(times10(str(carry))) + int(v)) // n2)
-		carry = (int(times10(str(carry))) + int(v)) % n2
+		res+= str((int(times10(str(carry))) + int(v)) // n2i)
+		carry = (int(times10(str(carry))) + int(v)) % n2i
 		x+= 1
 	if res=="":
 		res = "0"
@@ -76,23 +107,23 @@ def div(n1, n2, r1 = 0, r2 = 0, rstr1 = "[", rstr2 = "]"):
 			rcount+= 1
 			over = True
 			n1s.append(int(list(str(r1))[rcount % len(str(r1))]))
-		newcarry = (int(times10(str(carry))) + int(n1s[x])) % n2
+		newcarry = (int(times10(str(carry))) + int(n1s[x])) % n2i
 		if over:
-			if newcarry==0 and r1==0:
-				res+= str((int(times10(str(carry))) + int(n1s[x])) // n2)
-				return sign+re.sub("^$", "0", re.sub("^\\.", "0.", res.strip("0").rstrip(".")))
+			if newcarry==0 and r1=="0":
+				res+= str((int(times10(str(carry))) + int(n1s[x])) // n2i)
+				return sign+re.sub("^$", "0", re.sub("^\\.", "0.", res.strip("0").rstrip("."))).replace(".", decstr, 1)
 			y = 0
 			while y < len(carries):
 				if carries[y]==newcarry and (y % len(str(r1)))==((rcount + 1) % len(str(r1))):
-					res+= str((int(times10(str(carry))) + int(n1s[x])) // n2)
+					res+= str((int(times10(str(carry))) + int(n1s[x])) // n2i)
 					result = sign+re.sub("^$", "0", re.sub("^\\.", "0.", re.sub("^0+", "", res[:x - rcount + y]+"["+res[x - rcount + y:]+"]")))
 					if result[result.index("[") - 1]==result[result.index("]") - 1]:
 						result = result[:result.index("[") - 1]+"["+result[result.index("[") - 1]+result[result.index("[")+1:result.index("]") - 1]+"]"
 					if result.index("]")==result.index("[") + 3 and result[result.index("[") + 1]==result[result.index("[") + 2]:
 						result = result[:result.index("[") + 2]+"]"
-					return result.replace("[", rstr1).replace("]", rstr2)
+					return result.replace(".", decstr, 1).replace("[", rstr1, 1).replace("]", rstr2, 1)
 				y+= 1
-		res+= str((int(times10(str(carry))) + int(n1s[x])) // n2)
+		res+= str((int(times10(str(carry))) + int(n1s[x])) // n2i)
 		if over:
 			carries.append(carry)
 		carry = newcarry
@@ -101,4 +132,4 @@ def div(n1, n2, r1 = 0, r2 = 0, rstr1 = "[", rstr2 = "]"):
 if __name__=="__main__":
 	import sys
 	if len(sys.argv) > 2:
-		print(div(sys.argv[1], sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else 0, sys.argv[4] if len(sys.argv) > 4 else 0, sys.argv[5] if len(sys.argv) > 5 else "[", sys.argv[6] if len(sys.argv) > 6 else "]"))
+		print(div(sys.argv[1], sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else "-", sys.argv[4] if len(sys.argv) > 4 else ".", sys.argv[5] if len(sys.argv) > 5 else "[", sys.argv[6] if len(sys.argv) > 6 else "]"))
