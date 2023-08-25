@@ -3,13 +3,13 @@ import re
 def div(n1, n2, minstr = "-", decstr = ".", rstr1 = "[", rstr2 = "]"):
 	(n1, n2) = (str(n1), str(n2))
 
-	if len(n1)==0 or len(n2)==0 or re.match("^\\d*$", minstr) or re.match("^\\d*$", decstr) or re.match("^\\d*$", rstr1) or re.match("^\\d*$", rstr2):
-		return False
+	if len(n1)==0 or len(n2)==0 or re.match("^\\d*$", minstr) or re.match("^\\d*$", decstr) or re.match("^\\d*$", rstr1) or re.match("^\\d+$", rstr2):
+		return None
 
 	nre = "^("+re.escape(minstr)+")?\\d*("+re.escape(decstr)+"\\d*("+re.escape(rstr1)+"\\d*"+re.escape(rstr2)+")?)?$"
 
 	if not re.match(nre, n1) or not re.match(nre, n2):
-		return False
+		return None
 
 	neg = False
 	if n1.startswith(minstr):
@@ -39,7 +39,7 @@ def div(n1, n2, minstr = "-", decstr = ".", rstr1 = "[", rstr2 = "]"):
 
 
 	if n2=="0" and re.match("^[0\\.]+$", r2):
-		return False
+		return None
 	if n1=="0" and re.match("^[0\\.]+$", r1):
 		return "0"
 
@@ -131,5 +131,17 @@ def div(n1, n2, minstr = "-", decstr = ".", rstr1 = "[", rstr2 = "]"):
 
 if __name__=="__main__":
 	import sys
-	if len(sys.argv) > 2:
-		print(div(sys.argv[1], sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else "-", sys.argv[4] if len(sys.argv) > 4 else ".", sys.argv[5] if len(sys.argv) > 5 else "[", sys.argv[6] if len(sys.argv) > 6 else "]"))
+
+	match len(sys.argv):
+		case 7:
+			print(div(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6]) or "Error")
+		case 6:
+			print(div(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], "") or "Error")
+		case 5:
+			print(div(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], "[", "]") or "Error")
+		case 4:
+			print(div(sys.argv[1], sys.argv[2], sys.argv[3], ".", "[", "]") or "Error")
+		case 3:
+			print(div(sys.argv[1], sys.argv[2], "-", ".", "[", "]") or "Error")
+		case _:
+			print("Usage: python3 "+sys.argv[0]+" n1 n2 [minch [decch [rch1 [rch2]]]]")
