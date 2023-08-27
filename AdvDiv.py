@@ -30,11 +30,11 @@ def div(n1, n2, minstr = "-", decstr = ".", rstr1 = "[", rstr2 = "]"):
 	if n2[0]==".":
 		n2 = "0"+n2
 
-	r1 = re.search(re.escape(rstr1)+"(.+)"+re.escape(rstr2), n1[:n1.index(".") + 1]) if rstr1 in n1 else None
+	r1 = re.search(re.escape(rstr1)+"(.+)"+re.escape(rstr2), n1[n1.index(".") + 1:]) if rstr1 in n1 else None
 	r1 = "0" if r1 is None else r1.group(1)
 	if r1!="0":
 		n1 = n1[:n1.index(".") + n1[n1.index(".") + 1:].index(rstr1) + 1]
-	r2 = re.search(re.escape(rstr1)+"(.+)"+re.escape(rstr2), n2[:n1.index(".") + 1]) if rstr1 in n2 else None
+	r2 = re.search(re.escape(rstr1)+"(.+)"+re.escape(rstr2), n2[n2.index(".") + 1:]) if rstr1 in n2 else None
 	r2 = "0" if r2 is None else r2.group(1)
 	if r2!="0":
 		n2 = n2[:n2.index(".") + n2[n2.index(".") + 1:].index(rstr1) + 1]
