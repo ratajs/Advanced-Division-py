@@ -34,10 +34,12 @@ def div(n1, n2, minstr = "-", decstr = ".", rstr1 = "[", rstr2 = "]"):
 	r1 = "0" if r1 is None else r1.group(1)
 	if r1!="0":
 		n1 = n1[:n1.index(".") + n1[n1.index(".") + 1:].index(rstr1) + 1]
+	n1 = re.sub("\\.0*$" if r1=="0" else "\\.*$", "", re.sub("^0+", "0", n1))
 	r2 = re.search(re.escape(rstr1)+"(.+)"+re.escape(rstr2), n2[n2.index(".") + 1:]) if rstr1 in n2 else None
 	r2 = "0" if r2 is None else r2.group(1)
 	if r2!="0":
 		n2 = n2[:n2.index(".") + n2[n2.index(".") + 1:].index(rstr1) + 1]
+	n2 = re.sub("\\.0*$" if r2=="0" else "\\.*$", "", re.sub("^0+", "0", n2))
 
 
 	if n2=="0" and re.match("^[0\\.]+$", r2):
@@ -69,7 +71,7 @@ def div(n1, n2, minstr = "-", decstr = ".", rstr1 = "[", rstr2 = "]"):
 			nstring = nstring[:-2]
 		if(nstring=="0"):
 			return "0"
-		if "." in nstring and nstring.find(".")==len(nstring) - 2:
+		if "." in nstring and nstring.index(".")==len(nstring) - 2:
 			return nstring.replace(".", "")
 		if "." in nstring:
 			return nstring.split(".")[0]+nstring.split(".")[1][0]+"."+nstring.split(".")[1][1:]
